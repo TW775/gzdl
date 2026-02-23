@@ -1,0 +1,663 @@
+<!DOCTYPE html>
+
+<html lang="zh-CN">
+
+<head>
+    <meta content="text/html; charset=utf-8" http-equiv="Content-Type" />
+    <meta content="IE=edge" http-equiv="X-UA-Compatible" />
+    <meta content="width=device-width, initial-scale=1" name="viewport" />
+    <link href="./files/fovicon.ico" rel="icon" />
+    <title>工具推荐由联盟集团赞助</title>
+    <meta content="FINDSr7GU2MfCz9NvBBLPrgGHDXfffBCbywFI5YZWOs" name="google-site-verification" />
+    <meta content="导航" name="description" />
+    <meta content="导航" name="keywords" />
+    <meta content="导航" name="author" />
+    <script defer="defer" src="./files/annie.js"></script>
+
+
+    <style>
+        .ours-select {
+            position: relative;
+        }
+
+        .ours-select .selection-item {
+            display: block;
+            cursor: pointer;
+            width: 100%;
+            height: 36px;
+            line-height: 36px;
+            box-sizing: border-box;
+            padding: 0 32px 0 10px;
+            position: relative;
+        }
+
+        .ours-select .selection-item .arrow-svg {
+            position: absolute;
+            display: inline-block;
+            width: 14px;
+            height: 14px;
+            top: 50%;
+            transform: translateY(-50%);
+            right: 10px;
+        }
+
+        .ours-select .selection-item .arrow-svg path {
+            transition: all 0.3s;
+        }
+
+        .ours-select .selection-item.arrow-fold::before {
+            right: 50%;
+            top: 75%;
+            transform: rotate(45deg);
+        }
+
+        .ours-select .selection-item.arrow-fold::after {
+            left: 50%;
+            top: 75%;
+            transform: rotate(-45deg);
+        }
+
+        .ours-select .selection-item.arrow-unfold::before {
+            right: 50%;
+            top: 25%;
+            transform: rotate(-45deg);
+        }
+
+        .ours-select .selection-item.arrow-unfold::after {
+            left: 50%;
+            top: 25%;
+            transform: rotate(45deg);
+        }
+
+        .ours-select .selector {
+            top: 0;
+            position: absolute;
+            border-radius: 6px;
+            overflow: hidden;
+            width: 100%;
+            background: #f7f7f7;
+        }
+
+        .ours-select .selector:focus {
+            outline: none;
+        }
+
+        .ours-select .selector.z-index {
+            z-index: 9999999999999;
+            box-shadow: 0px 6px 10px 0px rgba(0, 0, 0, .14);
+        }
+
+        .ours-select .selector .select-dropdown {
+            transition: all 0.2s;
+        }
+
+        .ours-select .selector .select-dropdown.unfold {
+            max-height: 252px;
+            overflow-y: auto;
+            z-index: 9999999;
+        }
+
+        .ours-select .selector .select-dropdown.fold {
+            max-height: 0px;
+            overflow-y: hidden;
+        }
+
+        .ours-select .option-wrapper {
+            cursor: pointer;
+            width: 100%;
+            height: 36px;
+            line-height: 36px;
+            box-sizing: border-box;
+            padding: 0 32px 0 10px;
+        }
+
+        .ours-select .option-wrapper:hover {
+            background: #fff;
+        }
+
+        .ours-select .seleted {
+            background: #e6f4ff;
+        }
+
+        .ours-select .option {
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            user-select: none;
+        }
+
+        .hsq-image.error,
+        .hsq-image_inner,
+        .hsq-image__placeholder,
+        .hsq-image__wrapper {
+            height: 100%;
+            width: 100%;
+        }
+
+        .hsq-image {
+            display: inline-block;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .hsq-image_inner {
+            opacity: 1;
+            vertical-align: top;
+        }
+
+        .hsq-image_inner.is-loading {
+            opacity: 0;
+        }
+
+        .hsq-image__wrapper {
+            left: 0;
+            position: absolute;
+            top: 0;
+        }
+
+        .hsq-image__error,
+        .hsq-image__placeholder {
+            background: var(--hsq-fill-color-light);
+        }
+
+        .hsq-image__error {
+            align-items: center;
+            color: var(--hsq-text-color-placeholder);
+            display: flex;
+            font-size: 14px;
+            justify-content: center;
+            vertical-align: middle;
+        }
+
+        .hsq-image_preview {
+            cursor: pointer;
+        }
+
+        .hsq-image-viewer__wrapper {
+            bottom: 0;
+            left: 0;
+            position: fixed;
+            right: 0;
+            top: 0;
+        }
+
+        .hsq-image-viewer__btn {
+            align-items: center;
+            border-radius: 50%;
+            box-sizing: border-box;
+            cursor: pointer;
+            display: flex;
+            justify-content: center;
+            opacity: .8;
+            position: absolute;
+            -webkit-user-select: none;
+            user-select: none;
+            z-index: 1;
+        }
+
+        .hsq-image-viewer_btn.hsq-icon {
+            cursor: pointer;
+            font-size: inherit;
+        }
+
+        .hsq-image-viewer_close {
+            font-size: 40px;
+            height: 40px;
+            right: 40px;
+            top: 40px;
+            width: 40px;
+        }
+
+        .hsq-image-viewer__canvas {
+            align-items: center;
+            display: flex;
+            height: 100%;
+            justify-content: center;
+            position: static;
+            -webkit-user-select: none;
+            user-select: none;
+            width: 100%;
+        }
+
+        .hsq-image-viewer_actions {
+            background-color: var(--hsq-text-color-regular);
+            border-color: #fff;
+            border-radius: 22px;
+            bottom: 30px;
+            height: 44px;
+            left: 50%;
+            padding: 0 23px;
+            transform: translate(-50%);
+            width: 282px;
+        }
+
+        .hsq-image-viewer_actions_inner {
+            align-items: center;
+            color: #fff;
+            cursor: default;
+            display: flex;
+            font-size: 23px;
+            height: 100%;
+            justify-content: space-around;
+            width: 100%;
+        }
+
+        .hsq-image-viewer__prev {
+            left: 40px;
+        }
+
+        .hsq-image-viewer__next,
+        .hsq-image-viewer__prev {
+            background-color: var(--hsq-text-color-regular);
+            border-color: #fff;
+            color: #fff;
+            font-size: 24px;
+            height: 44px;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 44px;
+        }
+
+        .hsq-image-viewer__next {
+            right: 40px;
+            text-indent: 2px;
+        }
+
+        .hsq-image-viewer__close {
+            background-color: var(--hsq-text-color-regular);
+            border-color: #fff;
+            color: #fff;
+            font-size: 24px;
+            height: 44px;
+            width: 44px;
+        }
+
+        .hsq-image-viewer_mask {
+            background: #000;
+            height: 100%;
+            left: 0;
+            opacity: .5;
+            position: absolute;
+            top: 0;
+            width: 100%;
+        }
+
+        .viewer-fade-enter-active {
+            animation: viewer-fade-in var(--hsq-transition-duration);
+        }
+
+        .viewer-fade-leave-active {
+            animation: viewer-fade-out var(--hsq-transition-duration);
+        }
+
+        @keyframes viewer-fade-in {
+            0% {
+                opacity: 0;
+                transform: translate3d(0, -20px, 0);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateZ(0);
+            }
+        }
+
+        @keyframes viewer-fade-out {
+            0% {
+                opacity: 1;
+                transform: translateZ(0);
+            }
+
+            to {
+                opacity: 0;
+                transform: translate3d(0, -20px, 0);
+            }
+        }
+
+        .hsq-popper.is-gj-update-tips {
+            background: #ff9800;
+            border-radius: 4px;
+            box-shadow: 0 4px 12px rgba(0, 23, 54, .1);
+            color: #fff;
+            padding: 20px 32px 17px;
+        }
+
+        .hsq-popper.is-gj-update-tips.hsq-popper_arrow:before {
+            background: #ff9800;
+        }
+
+        .gj-tooltips-info[data-v-ec77157e] {
+            align-items: flex-end;
+            display: flex;
+            flex-direction: column;
+            max-width: 400px;
+        }
+
+        .gj-tooltips-info.gj-info[data-v-ec77157e] {
+            font-size: 15px;
+            text-align: left;
+            width: 100%;
+        }
+
+        .gj-tooltips-info.gj-info.gj-time[data-v-ec77157e] {
+            align-items: center;
+            display: flex;
+            font-size: 16px;
+            font-weight: 700;
+            justify-content: flex-start;
+            margin: 8px 0 1;
+        }
+
+        .gj-tooltips-info.gj-info.gj-time.hsq-icon[data-v-ec77157e] {
+            font-size: 20px;
+            margin-right: 10px;
+        }
+
+        .gj-b-g[data-v-ec77157e] {
+            align-items: center;
+            display: flex;
+            font-size: 12px;
+            justify-content: flex-end;
+            margin-top: 24px;
+            transform: scale(95);
+            transform-origin: right;
+        }
+
+        .gj-b-g .gj-set-hide[data-v-ec77157e] {
+            color: #fff;
+            cursor: pointer;
+            margin-right: 10px;
+        }
+
+        .gj-icon-for-open[data-v-f706fel0] * {
+            box-sizing: content-box;
+        }
+
+        .gj-icon-for-open[data-v-f706fel0] {
+            align-items: center;
+            background-color: #fff5e6;
+            border: 1px solid #ffcc80;
+            border-bottom-right-radius: 50px;
+            border-left: 0;
+            border-top-right-radius: 50px;
+            box-shadow: 0 0 9px 4px #ffeacc !important;
+            box-sizing: content-box;
+            color: #ff9800;
+            cursor: pointer;
+            display: flex;
+            flex-direction: row;
+            height: 28px;
+            justify-content: center;
+            padding-right: 10px;
+            position: fixed;
+            -webkit-user-select: none;
+            z-index: 2147483647;
+        }
+
+        .gj-icon-for-open>.hsq-icon[data-v-f706fel0] {
+            font-size: 14px;
+        }
+
+        .gj-icon[data-v-f706fel0] {
+            border: 0;
+            height: 18px;
+            margin-left: 6px;
+            padding: 0;
+            pointer-events: none;
+            width: 18px;
+        }
+
+        .gt-text[data-v-f706fel0] {
+            color: #ff9800;
+            font-size: 12px;
+            padding: 5px 0 5px 5px;
+        }
+
+        .openGjGlobalTool[data-v-f706fel0] {
+            color: #ff9800;
+            padding: 5px 0;
+        }
+
+        .gt-text[data-v-f706fel0],
+        .openGjGlobalTool[data-v-f706fel0] {
+            pointer-events: none;
+        }
+
+        .topSize {
+            margin-top: 2vw;
+        }
+
+        video {
+            width: 13vw;
+            height: 13vw;
+            border-radius: 1vw;
+            box-shadow: 0 0 2.6666666667vw rgba(45, 98, 217, .15);
+            margin-bottom: 3px;
+        }
+
+        @media screen and (min-width: 1200px) {
+            .main-l-content>.content-box>.content-list>.content-item>a>video {
+                width: 4vw;
+                height: 4vw;
+                border-radius: .6vw;
+                margin-bottom: 3px;
+            }
+        }
+    </style>
+    <link href="./files/annie.css" rel="stylesheet" />
+    <link href="./files/app.css?v=20251003" rel="stylesheet" />
+</head>
+
+<body inmaintabuse="1" style="zoom: 1;">
+    <div data-v-app="" id="app">
+        <div>
+            <div class="header flex-l">
+                <div class="left flex-l">
+                    <div class="text">
+                        <p>欢迎来到云顶娱乐导航</p>
+                        <div class="text-min hero-line">
+                            ydpc.tv
+                            <img src="./files/success.6ee344f6.svg" />
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="pc-media">
+                <div class="header-2 flex-2">
+                    <div class="big-text flex-l">
+                        <h1 id="ww-number" class="copyable" data-copy="aaa168" onclick="copyWW(this)">
+                            站长吾圈 <span>aaa168</span> <small class="copy-hint">（点击复制）</small>
+                        </h1>
+                    </div>
+                    <div class="info-text flex-2">
+                        <div class="google flex-l">
+                            <div class="google-logo"></div>
+                            <span>添加站长吾圈号 ⇗ 推荐最稳平台！福利待遇顶满</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="main">
+                    <div class="msg">
+                        <div class="van-notice-bar" role="alert">
+                            <!-- 滚动公告S -->
+                            <style>
+                                #nr {
+                                    font-size: 18px;
+                                    font-weight: 900;
+                                    margin: 0;
+                                    background: -webkit-linear-gradient(left, #ffffff, #ff0000 6.25%, #ff7d00 12.5%, #ffff00 18.75%, #00ff00 25%, #00ffff 31.25%, #0000ff 37.5%, #ff00ff 43.75%, #ffff00 50%, #ff0000 56.25%, #ff7d00 62.5%, #ffff00 68.75%, #00ff00 75%, #00ffff 81.25%, #0000ff 87.5%, #ff00ff 93.75%, #ffff00 100%);
+                                    -webkit-background-clip: text;
+                                    -webkit-text-fill-color: transparent;
+                                    background-size: 200% 100%;
+                                    animation: masked-animation 2s infinite linear;
+                                }
+
+                                @keyframes masked-animation {
+                                    0% {
+                                        background-position: 0 0;
+                                    }
+
+                                    100% {
+                                        background-position: -100% 0;
+                                    }
+                                }
+                            </style>
+                            <div
+                                style="background-color:#333;border-radius:25px;box-shadow:0px 0px 5px #f200ff;padding:4px;margin-bottom:0px;overflow: hidden;display: flex;justify-content: center;">
+                                <marquee>
+                                    <b id="nr">联盟集团专属打造：12年老台旗下！游戏齐全！通道齐全！大额无忧！</b>
+                                </marquee>
+                            </div>
+                            <!-- 滚动公告 -->
+                        </div>
+                    </div>
+                    <div class="main-box">
+                        <div class="main-l nav">
+                            <div class="main-l-content">
+                                <div class="right-panels">
+                                    <section class="panel panel-hub">
+                                        <div class="panel-title"><span class="pill">玩家聚集地</span></div>
+                                        <div class="grid hub-grid">
+                                            <a class="grid-item" href="https://ydpc8.cc/#/?i=68"><img alt="app1"
+                                                    src="./Public/uploads/yd.webp" />
+                                                <p class="title">云顶app</p>
+                                            </a>
+                                            <a class="grid-item" href="https://jszpc.cc"><img alt="app2"
+                                                    src="./Public/uploads/QQ20251003-233417.png" />
+                                                <p class="title">官网开奖</p>
+                                            </a>
+                                            <a class="grid-item" href="https://www.57.nz/"><img alt="app3"
+                                                    src="./Public/uploads/wq.jpg" />
+                                                <p class="title">吾圈聊天</p>
+                                            </a>
+                                            <a class="grid-item" href="https://accboyytbtw.acceboy.com/"><img alt="app4"
+                                                    src="./Public/uploads/pg.png" />
+                                                <p class="title">各种账号</p>
+                                            </a>
+                                        </div>
+                                    </section>
+                                    <section class="panel panel-invite">
+                                        <div class="panel-title"><span class="pill pill-ghost">实用工具推荐</span></div>
+                                        <div class="grid invite-grid"><a class="grid-item placeholder"
+ href="https://xydl.xyz/?channel=tg-10027">
+                                                <div class="ph"><img alt="app4" src="./Public/uploads/下载.png" /></div>
+                                                <p class="title">加速器</p>
+                                                <p class="sub">送一小时</p>
+                                            </a>
+                                            <a class="grid-item placeholder" href="https://ub66.com">
+                                                <div class="ph"><img alt="app4" src="./Public/uploads/images.jpg" />
+                                                </div>
+                                                <p class="title">浏览器</p>
+                                                <p class="sub">隐私不外泄</p>
+                                            </a>
+                                            <a class="grid-item placeholder" href="https://quark.cn">
+                                                <div class="ph"><img alt="app4"
+                                                        src="./Public/uploads/QQ20251003-232653.png" /></div>
+                                                <p class="title">浏览器</p>
+                                                <p class="sub">防劫持诈骗</p>
+                                            </a>
+                                            <a class="grid-item placeholder"
+                                                href="https://www.google.com/intl/zh-ch/chrome/">
+                                                <div class="ph"><img alt="app4" src="./Public/uploads/images.png" />
+                                                </div>
+                                                <p class="title">浏览器</p>
+                                                <p class="sub">谷歌浏览器</p>
+                                            </a>
+                                            <a class="grid-item placeholder" href="https://okx.com">
+                                                <div class="ph"><img alt="app4" src="./Public/uploads/images (1).jpg" />
+                                                </div>
+                                                <p class="title">交易所</p>
+                                                <p class="sub">下载需翻墙</p>
+                                            </a>
+                                            <a class="grid-item placeholder" href="https://token.im">
+                                                <div class="ph"><img alt="app4"
+                                                        src="./Public/uploads/QQ20251003-232858.png" /></div>
+                                                <p class="title">冷钱包</p>
+                                                <p class="sub">imtoken</p>
+                                            </a>
+                                            <a class="grid-item placeholder"
+                                                href="https://cn.pornhub.com/video/search?search=%E6%88%90%E4%BA%BA%E7%BD%91%E7%AB%99">
+                                                <div class="ph"><img alt="app4"
+                                                        src="./Public/uploads/(m=eafTGgaaaa)(mh=kIwuD0Y9kssQ_CXJ)7.jpg" />
+                                                </div>
+                                                <p class="title">全球P站</p>
+                                                <p class="sub">翻墙学姿势</p>
+                                            </a>
+                                            <a class="grid-item placeholder"
+                                                href="https://www.xvideos.com/lang/chinese">
+                                                <div class="ph"><img alt="app4"
+                                                        src="./Public/uploads/QQ20251005-001707.png" /></div>
+                                                <p class="title">午夜视频</p>
+                                                <p class="sub">无需翻墙</p>
+                                            </a>
+                                        </div>
+                                    </section>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="main-3-info"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="footer-sj" data-v-4ad322e2="">
+            <div class="footer-sj-main" data-v-4ad322e2=""></div>
+            <span data-v-4ad322e2="">28全系列 红包扫雷牛牛 电子 捕鱼 棋牌 快三 体育 电竞</span>
+        </div>
+    </div>
+    <div id="REC__-container"></div>
+    <div id="hsq-popper-container-695">
+        <!-- v-if -->
+    </div>
+    <span data-v-app=""></span>
+    <fatkun-drop-panel style="display: none;"></fatkun-drop-panel>
+    <script src="./files/jquery-1.9.0.min.js"></script>
+    <script type="text/javascript">
+        $(document).ready(function () {
+            $("#tab li").click(function () {
+                var liindex = $("#tab li").index(this);
+                $("#tab").find("li").removeClass("li-active");
+                $(this).addClass("li-active");
+                $(".tab_cont").eq(liindex).show().siblings(".tab_cont").hide();
+            });
+        });
+    </script>
+    <script>
+        function copyWW(el) {
+            const text = el.dataset.copy || (el.textContent || '').replace(/\D/g, '');
+            copyToClipboard(text).then(() => showToast(`已复制：下载注册吾圈聊天添加站长，注册时服务器一栏必填：88`));
+        }
+
+        function copyToClipboard(text) {
+            if (navigator.clipboard && window.isSecureContext) {
+                return navigator.clipboard.writeText(text);
+            }
+            // 兼容处理
+            const ta = document.createElement('textarea');
+            ta.value = text;
+            ta.style.position = 'fixed';
+            ta.style.left = '-9999px';
+            document.body.appendChild(ta);
+            ta.focus();
+            ta.select();
+            try { document.execCommand('copy'); } finally { document.body.removeChild(ta); }
+            return Promise.resolve();
+        }
+
+        function showToast(msg) {
+            let t = document.getElementById('toast');
+            if (!t) {
+                t = document.createElement('div');
+                t.id = 'toast';
+                document.body.appendChild(t);
+            }
+            t.textContent = msg;
+            t.classList.add('show');
+            clearTimeout(showToast._timer);
+            showToast._timer = setTimeout(() => t.classList.remove('show'), 12000);
+        }
+    </script>
+
+</body>
+
+</html>
